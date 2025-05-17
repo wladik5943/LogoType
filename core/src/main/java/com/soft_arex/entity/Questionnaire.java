@@ -1,0 +1,19 @@
+package com.soft_arex.entity;
+
+import jakarta.persistence.*;
+import lombok.Data;
+
+import java.util.List;
+
+@Data
+@Entity
+@Table(schema = "softarex", name = "questionnaire")
+public class Questionnaire {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String title;
+
+    @ManyToMany
+    private List<Field> fields;
+}
