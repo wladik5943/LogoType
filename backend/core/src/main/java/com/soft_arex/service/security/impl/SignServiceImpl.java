@@ -26,7 +26,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class SignServiceImpl implements SignService {
+public class  SignServiceImpl implements SignService {
 
     private final UserService userService;
     private final JwtServiceImpl jwtService;
@@ -37,7 +37,7 @@ public class SignServiceImpl implements SignService {
 
     @Override
     public JwtAuthenticationResponse refreshToken(String refreshToken) {
-        // 1. Проверяем и достаём имя пользователя
+
         String username;
         try {
             username = jwtService.extractUserName(refreshToken);
@@ -45,22 +45,22 @@ public class SignServiceImpl implements SignService {
             throw new UserException("Refresh token недействителен", HttpStatus.UNAUTHORIZED);
         }
 
-        // 2. Ищем пользователя
+
         User user = userRepository.findByEmail(username);
         if (user == null) {
             throw new UserException("Пользователь не найден", HttpStatus.UNAUTHORIZED);
         }
 
-        // 3. Проверяем валидность токена
+
         if (!jwtService.isTokenValid(refreshToken, user)) {
             throw new UserException("Невалидный refresh токен", HttpStatus.UNAUTHORIZED);
         }
 
-        // 4. Генерируем новые токены
+
         String newAccessToken = jwtService.generateToken(user);
         String newRefreshToken = jwtService.generateRefreshToken(user); // если хочешь менять
 
-        // 5. Возвращаем
+
         return new JwtAuthenticationResponse(newAccessToken, newRefreshToken);
     }
 

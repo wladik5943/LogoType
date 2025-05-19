@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class PasswordCodeRequest {
-    private String email; // необязателен для авторизованных
+    private String email;
 }
