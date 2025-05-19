@@ -4,7 +4,7 @@ import {
     Form, FormGroup, Label, Input, Button
 } from 'reactstrap';
 
-// Маппинг для отображения и отправки
+
 const fieldTypes = [
     { label: "Single line text", value: "TEXT_SINGLE_LINE" },
     { label: "Multiline text", value: "TEXT_MULTILINE" },

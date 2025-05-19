@@ -31,7 +31,6 @@ export default function ResetPasswordPage() {
                 setError('');
                 setSuccessMsg('Почта подтверждена');
                 const response = await api.post('/oauth/sign-up', form);
-                // например, редирект на логин: window.location.href = '/login';
                 const accessToken = response.data.accessToken;
                 sessionStorage.setItem('accessToken', accessToken);
 

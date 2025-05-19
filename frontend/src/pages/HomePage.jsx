@@ -10,13 +10,13 @@ export default function HomePage() {
         phone: ''
     });
 
-    // Проверка токена при входе
+
     useEffect(() => {
 
         const item = sessionStorage.getItem('user');
         if(!item) {
-            // Запрашиваем пользователя с backend
-            api.get('/oauth/me') // путь зависит от твоего backend
+
+            api.get('/oauth/me')
                 .then(res => {
                     setUser(res.data)
                     sessionStorage.setItem("user", JSON.stringify(res.data));

@@ -25,7 +25,7 @@ const FieldsPage = () => {
     const [formData, setFormData] = useState({});
     const [loading, setLoading] = useState(true);
 
-    // Для модалки с ошибками
+
     const [modalOpen, setModalOpen] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
 
@@ -152,7 +152,7 @@ const FieldsPage = () => {
         }
     };
 
-    // Валидация обязательных полей
+
     const validateForm = () => {
         for (const field of fields) {
             if (field.required) {
@@ -175,7 +175,7 @@ const FieldsPage = () => {
         e.preventDefault();
 
         if (!validateForm()) {
-            return; // остановить отправку, если валидация не прошла
+            return;
         }
 
         setSubmitting(true);
@@ -236,7 +236,7 @@ const FieldsPage = () => {
                         </Button>
                     </Form>
 
-                    {/* Модальное окно для ошибок */}
+
                     <Modal isOpen={modalOpen} toggle={() => setModalOpen(!modalOpen)}>
                         <ModalHeader toggle={() => setModalOpen(false)}>Внимание</ModalHeader>
                         <ModalBody>{modalMessage}</ModalBody>

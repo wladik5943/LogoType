@@ -30,12 +30,7 @@ function App() {
             <Route path="/questionnaires" element={<QuestionnairePage />} />
             <Route path="/questionnaires/:id" element={<QuestionnairePage />} />
             <Route path="/questionnaires/success" element={<SuccessPage />} />
-          {/* Добавляй остальные маршруты, когда создашь страницы */}
-          {/* <Route path="/profile" element={<ProfilePage />} /> */}
-          {/* <Route path="/fields" element={<FieldsPage />} /> */}
-          {/* <Route path="/questionnaires/:id" element={<QuestionnairePage />} /> */}
-          {/* <Route path="/success" element={<SuccessPage />} /> */}
-          {/* <Route path="/responses" element={<ResponsesPage />} /> */}
+
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>

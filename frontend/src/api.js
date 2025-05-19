@@ -16,7 +16,6 @@ api.interceptors.response.use(
     async error => {
         const originalRequest = error.config;
 
-        // Если access истёк, и это не попытка обновить токен
         if (error.response && error.response.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
 
@@ -31,13 +30,13 @@ api.interceptors.response.use(
 
                 sessionStorage.setItem('accessToken', newAccessToken);
 
-                // Повторить запрос с новым токеном
+
                 originalRequest.headers.Authorization = 'Bearer ' + newAccessToken;
                 return axios(originalRequest);
 
             } catch (e) {
                 console.error('Refresh token не сработал');
-                window.location.href = '/login'; // отправляем на логин
+                window.location.href = '/login';
             }
         }
 

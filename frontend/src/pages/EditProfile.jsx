@@ -6,7 +6,7 @@ import {getUser} from '../utils/auth';
 import AppNavbar from "../utils/AppNavbar";
 
 export default function EditProfile() {
-    // Состояние для формы
+
     const [form, setForm] = useState({
         firstName: '',
         lastName: '',
