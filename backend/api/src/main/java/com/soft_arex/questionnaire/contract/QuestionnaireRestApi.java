@@ -7,11 +7,18 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/questionnaires")
+@RequestMapping("/test")
 public interface QuestionnaireRestApi {
 
-    @GetMapping
+
+    @PatchMapping("/{id}/status")
+    QuestionnaireResponseDTO updateStatus(@PathVariable("id") Long id);
+
+    @GetMapping("/all")
     List<QuestionnaireResponseDTO> getAll();
+
+    @GetMapping("/mine")
+    List<QuestionnaireResponseDTO> getMine();
 
     @GetMapping("/{id}")
     QuestionnaireResponseDTO getById(@PathVariable Long id);

@@ -46,19 +46,8 @@ public class  SignServiceImpl implements SignService {
         }
 
 
-        User user = userRepository.findByEmail(username);
-        if (user == null) {
-            throw new UserException("Пользователь не найден", HttpStatus.UNAUTHORIZED);
-        }
-
-
-        if (!jwtService.isTokenValid(refreshToken, user)) {
-            throw new UserException("Невалидный refresh токен", HttpStatus.UNAUTHORIZED);
-        }
-
-
-        String newAccessToken = jwtService.generateToken(user);
-        String newRefreshToken = jwtService.generateRefreshToken(user); // если хочешь менять
+        String newAccessToken = jwtService.generateToken(jwtService.getUserByToken());
+        String newRefreshToken = jwtService.generateRefreshToken(jwtService.getUserByToken()); // если хочешь менять
 
 
         return new JwtAuthenticationResponse(newAccessToken, newRefreshToken);
@@ -67,9 +56,8 @@ public class  SignServiceImpl implements SignService {
 
     @Override
     public ResponseEntity<UserResponse> userResponseByEmail() {
-        User userByToken = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Optional<User> user = userRepository.findById(userByToken.getId());
-        return ResponseEntity.ok(userMapper.toResponse(user.get()));
+        User user = jwtService.getUserByToken();
+        return ResponseEntity.ok(userMapper.toResponse(user));
     }
 
 

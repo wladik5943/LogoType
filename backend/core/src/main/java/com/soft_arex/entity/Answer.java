@@ -2,6 +2,7 @@ package com.soft_arex.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.BatchSize;
 
 
 import java.time.LocalDateTime;
@@ -10,7 +11,7 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(schema = "softarex", name = "response")
+@Table( name = "response")
 public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +25,7 @@ public class Answer {
 
     private LocalDateTime submittedAt;
 
+    @BatchSize(size = 100)
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "response_id")
     private List<AnswerField> answers = new ArrayList<>();

@@ -1,0 +1,57 @@
+создать сущности   1
+логика для тестов
+логика для ответов
+логика входа и регистрации   1
+подтверждение по почте
+редактирование данных пользователя
+вебсокет
+
+
+
+страницы
+вход 1
+регистрация 1
+редактирование пользователя 1
+смена пароля 1
+страницы полей 1
+страницы ответов
+страницы ошибок
+страница приема ответов 1
+
+
+
+кнопка сброса читай тз
+
+#DATABASE CONFIG
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.datasource.username=postgres
+spring.datasource.password=1234
+spring.datasource.url=jdbc:postgresql://localhost:5432/data
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto=update
+
+spring.thymeleaf.cache=false
+
+
+#SMTP CONFIG
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=wlad290405@gmail.com
+spring.mail.password=ptje seua eoxg ijqp
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.default-encoding=UTF-8
+
+
+#  JWT CONFIG
+jwt.secret=SGVsbG9Xb3JsZFRlYWNobWVTa2lsbHNBbmRTb21ldGhpbmdFbHNlSUxpa2VKYXZhQW5kSUhvcGVUaGF0WW91TGlrZUphdmFUb28=
+jwt.accessTokenExpiration=3600000
+jwt.refreshTokenExpiration=604800000
+
+
+#  REDIS
+spring.data.redis.host=localhost
+spring.data.redis.port=6379
+spring.data.redis.timeout=60000
+

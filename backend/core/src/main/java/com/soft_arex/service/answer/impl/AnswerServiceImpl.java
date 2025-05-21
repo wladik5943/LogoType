@@ -1,14 +1,22 @@
 package com.soft_arex.service.answer.impl;
 
+import com.soft_arex.answer.model.AnswerFieldDTO;
+import com.soft_arex.answer.model.AnswerResponse;
+import com.soft_arex.controller.AnswerNotifier;
 import com.soft_arex.entity.*;
+import com.soft_arex.exeption.UserException;
+import com.soft_arex.mapper.AnswerMapper;
 import com.soft_arex.repository.FieldRepository;
 import com.soft_arex.repository.QuestionnaireRepository;
-import com.soft_arex.repository.ResponseRepository;
+import com.soft_arex.repository.AnswerRepository;
 import com.soft_arex.repository.UserRepository;
 import com.soft_arex.answer.model.SubmitAnswerRequest;
-import com.soft_arex.answer.model.AnswerDTO;
 import com.soft_arex.service.answer.AnswerService;
+import com.soft_arex.service.security.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -26,8 +34,20 @@ public class AnswerServiceImpl implements AnswerService {
 
     private final QuestionnaireRepository questionnaireRepository;
     private final FieldRepository fieldRepository;
-    private final ResponseRepository responseRepository;
+    private final AnswerRepository answerRepository;
     private final UserRepository userRepository;
+    private final AnswerNotifier answerNotifier;
+    private final AnswerMapper answerMapper;
+    private final JwtService jwtService;
+
+    public Page<AnswerResponse> getAnswersByTestId(Long testId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return answerRepository.findByQuestionnaireId(testId, pageable)
+                .map(answerMapper::toResponse);
+    }
+
+
+
 
 
     public void submit(SubmitAnswerRequest request) {
@@ -35,22 +55,21 @@ public class AnswerServiceImpl implements AnswerService {
         Answer response = new Answer();
         if(request.getQuestionnaireId() != null) {
             Questionnaire questionnaire = questionnaireRepository.findById(request.getQuestionnaireId())
-                    .orElse(null);
+                    .orElseThrow(() -> new UserException("Questionnaire not found"));
             response.setQuestionnaire(questionnaire);
         }else
-            response.setQuestionnaire(null);
+           throw new UserException("QuestionnaireId is null");
 
 
         response.setSubmittedAt(LocalDateTime.now());
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.isAuthenticated() && auth.getPrincipal() != "anonymousUser") {
-            Long userId = ((User) auth.getPrincipal()).getId();
-            response.setSubmittedBy(userRepository.findById(userId).orElse(null));
+            response.setSubmittedBy(jwtService.getUserByToken());
         }
 
         List<Long> fieldIds = request.getAnswers().stream()
-                .map(AnswerDTO::getFieldId)
+                .map(AnswerFieldDTO::getFieldId)
                 .distinct()
                 .toList();
 
@@ -61,7 +80,7 @@ public class AnswerServiceImpl implements AnswerService {
         // валидация и маппинг ответов
         List<AnswerField> answers = new ArrayList<>();
 
-        for (AnswerDTO dto : request.getAnswers()) {
+        for (AnswerFieldDTO dto : request.getAnswers()) {
             Field field = fieldMap.get(dto.getFieldId());
             if (field == null) {
                 throw new RuntimeException("Field not found: ID " + dto.getFieldId());
@@ -79,7 +98,8 @@ public class AnswerServiceImpl implements AnswerService {
         }
 
         response.setAnswers(answers);
-        responseRepository.save(response);
+        answerRepository.save(response);
+        answerNotifier.notifyAnswerCount((int)answerRepository.countByQuestionnaireId(request.getQuestionnaireId()),response);
     }
 }
 

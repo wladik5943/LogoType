@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public User loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User register(UserCreateRequest userCreateRequest) {
+    public User register(UserCreateRequest userCreateRequest)  {
         var user = userMapper.toEntity(userCreateRequest);
         String encode = standartPasswordEncoder.encode(user.getPassword());
         user.setPassword(encode);

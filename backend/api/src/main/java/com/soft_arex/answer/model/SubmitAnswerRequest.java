@@ -7,7 +7,7 @@ import java.util.List;
 @Data
 public class SubmitAnswerRequest {
     private Long questionnaireId;
-    private List<AnswerDTO> answers;
+    private List<AnswerFieldDTO> answers;
 
 }
 

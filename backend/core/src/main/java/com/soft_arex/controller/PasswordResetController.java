@@ -8,11 +8,12 @@ import com.soft_arex.email.model.VerifyEmailRequest;
 import com.soft_arex.entity.User;
 import com.soft_arex.service.email.PasswordResetService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
 public class PasswordResetController implements PasswordResetRestAPI {
@@ -30,9 +31,10 @@ public class PasswordResetController implements PasswordResetRestAPI {
 
     @Override
     public ResponseEntity<?> verify(CodeVerifyRequest req, Authentication auth) {
-        String email = (auth != null) ? ((User) auth.getPrincipal()).getEmail() : req.getEmail();
-        passwordResetService.verifyCode(email, req.getCode());
-        return ResponseEntity.ok("Код подтверждён");
+            String email = (auth != null) ? ((User) auth.getPrincipal()).getEmail() : req.getEmail();
+            passwordResetService.verifyCode(email, req.getCode());
+            return ResponseEntity.ok("Код подтверждён");
+
     }
 
     @Override

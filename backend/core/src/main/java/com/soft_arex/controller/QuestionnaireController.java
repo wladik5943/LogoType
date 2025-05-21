@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
 public class QuestionnaireController implements QuestionnaireRestApi {
@@ -20,8 +20,18 @@ public class QuestionnaireController implements QuestionnaireRestApi {
 
 
     @Override
+    public QuestionnaireResponseDTO updateStatus(Long id) {
+        return questionnaireService.updateStatus(id);
+    }
+
+    @Override
     public List<QuestionnaireResponseDTO> getAll() {
         return questionnaireService.getAll();
+    }
+
+    @Override
+    public List<QuestionnaireResponseDTO> getMine() {
+        return questionnaireService.getByUser();
     }
 
     @Override

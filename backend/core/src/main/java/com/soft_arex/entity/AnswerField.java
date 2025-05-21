@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(schema = "softarex", name = "answer")
+@Table( name = "answer")
 public class AnswerField {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
