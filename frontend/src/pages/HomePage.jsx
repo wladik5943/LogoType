@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from '../api';
 import { logout } from '../utils/auth';
 import Navbar from "../utils/NavbarFull";
+import axios from "axios";
 export default function HomePage() {
     const [user, setUser] = useState({
         firstName: '',
@@ -13,14 +14,17 @@ export default function HomePage() {
 
     useEffect(() => {
 
-        const item = sessionStorage.getItem('user');
-        if(!item) {
+        const token = sessionStorage.getItem('accessToken');
 
+        const item = sessionStorage.getItem('user');
+        if(!item || !token) {
             api.get('/oauth/me')
                 .then(res => {
                     setUser(res.data)
                     sessionStorage.setItem("user", JSON.stringify(res.data));
                 })
+        }else{
+            setUser(JSON.parse(item))
         }
 
     }, []);
@@ -56,10 +60,13 @@ export default function HomePage() {
 
                     <ul className="list-group">
                         <li className="list-group-item">
-                            <a href="/fields" className="text-decoration-none">🗂 Manage Fields</a>
+                            <a href="/field" className="text-decoration-none">⚙️ Manage Fields</a>
                         </li>
                         <li className="list-group-item">
-                            <a href="/responses" className="text-decoration-none">📋 View Responses</a>
+                            <a href="/questionnaires?mode=mine" className="text-decoration-none">🗂 Manage Questionnaire</a>
+                        </li>
+                        <li className="list-group-item">
+                            <a href="/questionnaires?mode=all" className="text-decoration-none">📝 Answer the Questionnaire</a>
                         </li>
 
                     </ul>

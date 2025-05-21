@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api';
-import Navbar from "../utils/Navbar";
+
 export default function ResetPasswordPage() {
     const [step, setStep] = useState(1);
     const [email, setEmail] = useState('');
@@ -92,7 +92,7 @@ export default function ResetPasswordPage() {
                 {error && <div className="alert alert-danger py-1">{error}</div>}
                 {successMsg && <div className="alert alert-success py-1">{successMsg}</div>}
 
-
+                {/* Step 1 */}
                 {step === 1 && (
                     <form onSubmit={handleSendCode}>
                         {!isAuthorized && (
@@ -121,7 +121,7 @@ export default function ResetPasswordPage() {
                     </form>
                 )}
 
-
+                {/* Step 2 */}
                 {step === 2 && (
                     <form onSubmit={handleVerifyCode}>
                         <div className="mb-3">
@@ -138,7 +138,7 @@ export default function ResetPasswordPage() {
                     </form>
                 )}
 
-
+                {/* Step 3 */}
                 {step === 3 && (
                     <form onSubmit={handleSetPassword}>
                         <div className="mb-3">

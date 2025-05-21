@@ -12,35 +12,36 @@ import {
     ModalBody,
     ModalFooter
 } from 'reactstrap';
-import { useLocation } from 'react-router-dom';
+import {useLocation, useParams} from 'react-router-dom';
 import api from '../api';
 
 const FieldsPage = () => {
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-    const testId = queryParams.get('testId');
 
+
+
+    const [test, setTest] = useState([]);
     const [submitting, setSubmitting] = useState(false);
     const [fields, setFields] = useState([]);
     const [formData, setFormData] = useState({});
     const [loading, setLoading] = useState(true);
 
-
+    // Для модалки с ошибками
     const [modalOpen, setModalOpen] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
-
+    const { id } = useParams();
     useEffect(() => {
         const fetchFields = async () => {
             setLoading(true);
             try {
                 let response;
-                if (testId) {
-                    response = await api.get(`/tests/${testId}/fields`);
+                if (id) {
+                    response = await api.get(`/test/${id}`);
                 } else {
-                    response = await api.get(`/fields?page=0&size=50`);
+                    window.location.href = '/questionnaires';
                 }
-                const data = testId ? response.data : response.data.content;
-                setFields(data);
+                const data = id ? response.data : response.data.content;
+                setFields(data.fields);
+                setTest(data)
 
                 const initialFormData = {};
                 data.forEach((field) => {
@@ -63,7 +64,7 @@ const FieldsPage = () => {
         };
 
         fetchFields();
-    }, [testId]);
+    }, [id]);
 
     const handleChange = (field, value, optionValue = null) => {
         setFormData((prevData) => {
@@ -152,7 +153,7 @@ const FieldsPage = () => {
         }
     };
 
-
+    // Валидация обязательных полей
     const validateForm = () => {
         for (const field of fields) {
             if (field.required) {
@@ -160,7 +161,7 @@ const FieldsPage = () => {
                 if (
                     value === '' ||
                     (Array.isArray(value) && value.length === 0) ||
-                    value == null
+                    value == null && field.active
                 ) {
                     setModalMessage(`Пожалуйста, заполните обязательное поле: "${field.label}"`);
                     setModalOpen(true);
@@ -181,7 +182,7 @@ const FieldsPage = () => {
         setSubmitting(true);
 
         const payload = {
-            questionnaireId: parseInt(testId),
+            questionnaireId: parseInt(id),
             answers: Object.entries(formData).map(([fieldId, value]) => ({
                 fieldId: parseInt(fieldId),
                 value: Array.isArray(value) ? value.join(',') : value
@@ -207,49 +208,62 @@ const FieldsPage = () => {
     };
 
     return (
-        <Container className="mt-5">
+        <Container className="d-flex justify-content-center align-items-center mt-5 mb-5">
+            <div style={{
+                width: '100%',
+                maxWidth: '420px',
+                background: '#fff',
+                border: '1px solid #ddd',
+                borderRadius: '8px',
+                padding: '30px',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+            }}>
+                <h4 className="text-center mb-4">{test.title}</h4>
 
-            <h3>{testId ? 'Fill Test' : 'Available Fields'}</h3>
-
-            {loading ? (
-                <div className="text-center mt-4">
-                    <Spinner color="primary" />
-                </div>
-            ) : (
-                <>
-                    <Form onSubmit={handleSubmit} className="mt-4">
-                        {fields.map((field) => (
-                            <FormGroup key={field.id} className="mb-4">
-                                <Label>{field.label} {field.required && <span className="text-danger">*</span>}</Label>
+                <Form onSubmit={handleSubmit}>
+                    {fields
+                        .filter(field => field.active)
+                        .map((field) => (
+                            <FormGroup key={field.id} className="mb-3">
+                                <Label className="form-label" style={{ fontWeight: 500 }}>
+                                    {field.label} {field.required && <span className="text-danger">*</span>}
+                                </Label>
                                 {renderField(field)}
                             </FormGroup>
                         ))}
-                        <Button color="primary" type="submit" disabled={submitting}>
+
+                    <div className="d-flex justify-content-center mt-4">
+                        <Button
+                            color="primary"
+                            type="submit"
+                            disabled={submitting}
+                            style={{ minWidth: '120px' }}
+                        >
                             {submitting ? (
                                 <>
                                     <Spinner size="sm" className="me-2" />
                                     Sending...
                                 </>
                             ) : (
-                                "Submit"
+                                "SUBMIT"
                             )}
                         </Button>
-                    </Form>
+                    </div>
+                </Form>
+            </div>
 
 
-                    <Modal isOpen={modalOpen} toggle={() => setModalOpen(!modalOpen)}>
-                        <ModalHeader toggle={() => setModalOpen(false)}>Внимание</ModalHeader>
-                        <ModalBody>{modalMessage}</ModalBody>
-                        <ModalFooter>
-                            <Button color="secondary" onClick={() => setModalOpen(false)}>
-                                Закрыть
-                            </Button>
-                        </ModalFooter>
-                    </Modal>
-                </>
-            )}
-
+            <Modal isOpen={modalOpen} toggle={() => setModalOpen(!modalOpen)}>
+                <ModalHeader toggle={() => setModalOpen(false)}>Внимание</ModalHeader>
+                <ModalBody>{modalMessage}</ModalBody>
+                <ModalFooter>
+                    <Button color="secondary" onClick={() => setModalOpen(false)}>
+                        Закрыть
+                    </Button>
+                </ModalFooter>
+            </Modal>
         </Container>
+
     );
 };
 

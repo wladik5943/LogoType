@@ -87,7 +87,7 @@ export default function LoginPage() {
                     <h2 className="text-center logotype">LOGO<span>TYPE</span></h2>
                     <h5 className="text-center mb-4">Log In</h5>
 
-
+                    {/* 🔔 Сообщение об ошибке */}
                     {message && (
                         <div className={`alert ${messageType === 'success' ? 'alert-success' : 'alert-danger'}`} role="alert">
                             {message}

@@ -18,7 +18,7 @@ export default function AppNavbar() {
                     .then(res => {
                         setUser(res.data)
                         sessionStorage.setItem("user", JSON.stringify(res.data));
-                    })
+                    }) // fallback
             }
         }
     }, []);
